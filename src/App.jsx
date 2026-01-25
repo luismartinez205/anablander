@@ -4,13 +4,16 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Inicio from "./pages/Inicio";
 import Navbar from "./components/Navbar";
+import Crud from "./firebas/Crud";
 import Login from "./components/Login";
 import Formulario from "./components/Formulario";
+import ProtectedRoute from './components/ProtectedRoute';
 import "./App.css";
 
-
+const adminRoute = import.meta.env.VITE_ADMIN_ROUTE;
 const App = () => {
   return (
+    <>
     <BrowserRouter>
       <Navbar />
       <Routes>
@@ -20,9 +23,14 @@ const App = () => {
         <Route path="/registro" element={<Formulario />} />
         <Route path="/nosotros" element={<Catalogo />} />
         <Route path="/checkout" element={<Checkout />} />
-        <Route path="/cart" element={<Cart />} />
+        <Route path="/cart" element={<Cart />}/>
+        <Route path={`/${adminRoute}`}element={<ProtectedRoute>
+                <Crud />
+              </ProtectedRoute>}/> 
       </Routes>
     </BrowserRouter>
+    
+    </>
   );
 };
 

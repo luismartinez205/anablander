@@ -1,29 +1,34 @@
-import React from 'react';
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Flex, Form, Input, message } from 'antd';
-import { Link } from "react-router-dom";
+import React from "react";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Checkbox, Flex, Form, Input, message } from "antd";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
-// 👉 Firebase
+// 🔥 Firebase
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebas/Config"; // ajusta la ruta si es necesario
+import { auth } from "../firebas/Config";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  // 🔐 Login con Firebase
+  // Ruta a la que quería ir antes del login (admin)
+  const from = location.state?.from?.pathname || "/";
+
   const onFinish = async (values) => {
-    console.log('Received values of form: ', values);
-
     const { username, password } = values;
 
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
-        username,   // Firebase usa EMAIL
+        username,
         password
       );
 
       console.log("Usuario logueado:", userCredential.user);
       message.success("Inicio de sesión exitoso");
+
+      // 👉 REDIRECCIÓN CORRECTA
+      navigate(from, { replace: true });
 
     } catch (error) {
       console.error(error);
@@ -32,7 +37,7 @@ const Login = () => {
   };
 
   return (
-    <div className='form-container'>
+    <div className="form-container">
       <Form
         name="login"
         initialValues={{ remember: true }}
@@ -42,14 +47,8 @@ const Login = () => {
         <Form.Item
           name="username"
           rules={[
-            { 
-              required: true, 
-              message: 'Por favor ingrese su email!' 
-            },
-            {
-              type: "email",
-              message: "Ingrese un email válido"
-            }
+            { required: true, message: "Por favor ingrese su email!" },
+            { type: "email", message: "Ingrese un email válido" },
           ]}
         >
           <Input prefix={<UserOutlined />} placeholder="Email" />
@@ -57,7 +56,7 @@ const Login = () => {
 
         <Form.Item
           name="password"
-          rules={[{ required: true, message: 'Por favor ingrese su contraseña!' }]}
+          rules={[{ required: true, message: "Por favor ingrese su contraseña!" }]}
         >
           <Input.Password
             prefix={<LockOutlined />}
@@ -70,7 +69,7 @@ const Login = () => {
             <Form.Item name="remember" valuePropName="checked" noStyle>
               <Checkbox>Recordarme</Checkbox>
             </Form.Item>
-            <a href="">Olvidé contraseña</a>
+            <a href="#">Olvidé contraseña</a>
           </Flex>
         </Form.Item>
 
@@ -78,7 +77,7 @@ const Login = () => {
           <Button block type="primary" htmlType="submit">
             Log in
           </Button>
-          O <Link to="/registro">Registrarse</Link>
+          O <Link to="/registro"> Registrarse</Link>
         </Form.Item>
       </Form>
     </div>
@@ -86,4 +85,5 @@ const Login = () => {
 };
 
 export default Login;
+
 

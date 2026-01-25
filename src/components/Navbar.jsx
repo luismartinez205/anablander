@@ -14,15 +14,22 @@ import { BiHomeSmile, BiCustomize } from "react-icons/bi";
 
 function Navbar() {
   const { cart } = useCart();
-  const { user, logout } = useAuth();
+  const { user,isAdmin, logout } = useAuth();
   const navigate = useNavigate();
 
   const totalItems = cart.reduce((acc, p) => acc + p.quantity, 0);
 
+  
+
   const handleLogout = async () => {
-    await logout();
-    navigate("/login");
+    try {
+      await logout();
+      navigate("/login", { replace: true });
+    } catch (e) {
+      console.error(e);
+    }
   };
+  
 
   return (
     <nav className="navbar">
